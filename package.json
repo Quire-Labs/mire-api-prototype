@@ -1,0 +1,26 @@
+{
+  "name": "quirelabs",
+  "version": "1.0.0",
+  "description": "Welcome to the next advancement in meeting new people",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jessiepullaro414/QuireLabs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jessiepullaro414/QuireLabs/issues"
+  },
+  "homepage": "https://github.com/jessiepullaro414/QuireLabs#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mongoose": "^5.1.3",
+    "nodemon": "^1.17.5"
+  }
+}
