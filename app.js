@@ -1,5 +1,16 @@
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const app = require('express')();
-const routes = require('./routes/index');
+const routes = require('./api/index');
+
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+//this is a logger middleware
+app.use(morgan('combined'))
 
 //  Connect all our routes to our application
 app.use('/', routes);

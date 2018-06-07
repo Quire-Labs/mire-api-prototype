@@ -1,5 +1,6 @@
-var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const config = require('../../env/secretkeys/secret.js');  
 
 var UserSchema = new mongoose.Schema({
   email: {
