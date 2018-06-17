@@ -1,63 +1,92 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const config = require('../../env/secretkeys/secret.js');  
+const titlize = require('mongoose-title-case');
+const unique = require('mongoose-unique-validator');
+const validate = require('mongoose-validator');
+const bcrypt = require('bcrypt-nodejs');
+const config = require('../env/secretkeys/secret');
 
-var UserSchema = new mongoose.Schema({
+const nameValidator = [
+  validate({
+    validator: 'isLength',
+    arguments: [0, 40],
+    message: 'Name must not exceed {ARGS[1]} characters.'
+  })
+];
+
+const emailValidator = [
+  validate({
+    validator: 'isLength',
+    arguments: [0, 40],
+    message: 'Email must not exceed {ARGS[1]} characters.'
+  }),
+  validate({
+    validator: 'isEmail',
+    message: 'Email must be valid.'
+  })
+];
+
+const usernameValidator = [
+  validate({
+    validator: 'isLength',
+    arguments: [3, 15],
+    message: 'Username must be between {ARGS[0]} and {ARGS[1]} characters.'
+  }),
+  validate({
+    validator: 'matches',
+    arguments: /^[A-Za-z][-_A-Za-z0-9]+$/,
+    message: 'Username must start with a letter and must not have special characters except - and _.'
+  })
+];
+
+const passwordValidator = [
+  validate({
+    validator: 'isLength',
+    arguments: [6, 20],
+    message: 'Password must be between {ARGS[0]} and {ARGS[1]} characters.'
+  })
+];
+
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    validate: nameValidator
+  },
   email: {
     type: String,
+    required: [true, 'Email is required.'],
     unique: true,
-    required: true,
-    trim: true
+    validate: emailValidator
   },
   username: {
     type: String,
+    required: [true, 'Username is required.'],
     unique: true,
-    required: true,
-    trim: true
+    validate: usernameValidator
   },
   password: {
     type: String,
-    required: true,
-  },
-  passwordConf: {
-    type: String,
-    required: true,
+    required: [true, 'Password is required.'],
+    validate: passwordValidator
   }
 });
 
-//authenticate input against database
-UserSchema.statics.authenticate = function (email, password, callback) {
-  User.findOne({ email: email })
-    .exec(function (err, user) {
-      if (err) {
-        return callback(err)
-      } else if (!user) {
-        var err = new Error('User not found.');
-        err.status = 401;
-        return callback(err);
-      }
-      bcrypt.compare(password, user.password, function (err, result) {
-        if (result === true) {
-          return callback(null, user);
-        } else {
-          return callback();
-        }
-      })
-    });
-}
+UserSchema.plugin(unique, { message: 'That {PATH} is already taken.' });
+UserSchema.plugin(titlize, { paths: ['name'], trim: false });
 
-//hashing a password before saving it to the database
 UserSchema.pre('save', function (next) {
-  var user = this;
-  bcrypt.hash(user.password, 10, function (err, hash) {
-    if (err) {
-      return next(err);
-    }
-    user.password = hash;
-    next();
-  })
+
+  const user = this;
+  if (!user.isModified('password')) { return next(); }
+
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) { return next(err); }
+
+    bcrypt.hash(user.password, salt, null, (error, hash) => {
+      if (error) { return next(error); }
+      user.password = hash;
+      next();
+    });
+  });
 });
 
-
-var User = mongoose.model('User', UserSchema);
-module.exports = User;
+const User = module.exports = mongoose.model('user', UserSchema);
