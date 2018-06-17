@@ -9,10 +9,10 @@ const User = require('./userModel');
 
 router.post('/register', (req, res) => {
 
-  if (req.body.password !== req.body.passwordconfirm) {
-    res.status(400).json({ success: false, msg: 'Passwords do not match.' });
-    return;
-  }
+   if (req.body.password !== req.body.passwordconfirm) {
+     res.status(400).json({ success: false, msg: 'Passwords do not match.' });
+     return;
+   }
 
   let newUser = new User({
     name: req.body.name,
