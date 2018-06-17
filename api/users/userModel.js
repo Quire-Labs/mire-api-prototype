@@ -3,7 +3,7 @@ const titlize = require('mongoose-title-case');
 const unique = require('mongoose-unique-validator');
 const validate = require('mongoose-validator');
 const bcrypt = require('bcrypt-nodejs');
-const config = require('../env/secretkeys/secret');
+const config = require('../../env/secretkeys/secret');
 
 const nameValidator = [
   validate({

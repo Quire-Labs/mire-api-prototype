@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const app = require('express')();
-const routes = require('./api/index');
+const routes = require('./api/users/userRoutes');
 
 
 app.use(bodyParser.urlencoded({ extended: false }));

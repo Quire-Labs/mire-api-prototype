@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt-nodejs');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const config = require('../env/secretkeys/secret');
+const config = require('../../env/secretkeys/secret');
 const User = require('./userModel');
 
 
@@ -80,7 +80,6 @@ router.post('/login', (req, res) => {
           expiresIn: 604800 // 1 week
         });
 
-        // Don't include the password in the returned user object
         return res.json({
           success: true,
           token: 'JWT ' + token,
